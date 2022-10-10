@@ -4,11 +4,11 @@ using TMPro;
 
 public class InputManager : MonoBehaviour
 {
-    private GameObject currentKey;
-
     public Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>();
 
     public TMP_Text leftUpKey, leftDownKey, rightUpKey, rightDownKey;
+
+    private bool changingLeftUp, changingLeftDown, changingRightUp, changingRightDown;
 
 
     private void Start()
@@ -24,25 +24,62 @@ public class InputManager : MonoBehaviour
         rightDownKey.text = keys["RightDown"].ToString();
     }
 
-    private void Update()
-    {
-        if (currentKey != null)
-            Debug.Log(currentKey.name);
-    }
 
     private void OnGUI()
     {
         Event e = Event.current;
         if (e.isKey)
         {
-            keys[currentKey.name] = e.keyCode;
-            currentKey.GetComponentInChildren<TMP_Text>().text = e.keyCode.ToString();
-            currentKey = null;
+            if (changingLeftUp)
+            {
+                keys["LeftUp"] = e.keyCode;
+                leftUpKey.text = e.keyCode.ToString();
+                changingLeftUp = false;
+            }
+            else if (changingLeftDown)
+            {
+                keys["LeftDown"] = e.keyCode;
+                leftDownKey.text = e.keyCode.ToString();
+                changingLeftDown = false;
+            }
+            else if (changingRightUp)
+            {
+                keys["RightUp"] = e.keyCode;
+                rightUpKey.text = e.keyCode.ToString();
+                changingRightUp = false;
+            }
+            else if (changingRightDown)
+            {
+                keys["RightDown"] = e.keyCode;
+                rightDownKey.text = e.keyCode.ToString();
+                changingRightDown = false;
+            }
         }
     }
-    public void ChangeKey(GameObject clicked)
+
+    public void ChangeLeftDown()
     {
-        currentKey = clicked;
+        changingLeftDown = true;
+    }
+    public void ChangeLeftUp()
+    {
+        changingLeftUp = true;
+    }
+    public void ChangeRightDown()
+    {
+        changingRightDown = true;
+    }
+    public void ChangeRightUp()
+    {
+        changingRightUp = true;
+    }
+
+    public void CancelChangeKey()
+    {
+        changingLeftDown = false;
+        changingLeftUp = false;
+        changingRightDown = false;
+        changingRightUp = false;
     }
 
     public void SaveKeys()
