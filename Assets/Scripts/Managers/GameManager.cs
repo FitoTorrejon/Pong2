@@ -1,14 +1,16 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
-using UnityEngine.Events;
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
 
+    List<GameObject> previousMenus;
+
     private bool gamePaused;
+    private bool onMenu;
 
     #endregion
 
@@ -18,9 +20,9 @@ public class GameManager : MonoBehaviour
 
     #region Accesses
 
-    [SerializeField] Scene UIScene;
-
-    public UnityEvent OnPause = new UnityEvent();
+    [SerializeField] Scene LoadingScreen;
+    [SerializeField] GameObject SettingsMenu;
+    [SerializeField] GameObject PauseMenu;
 
     public bool GamePaused {
         get => gamePaused;
@@ -30,9 +32,38 @@ public class GameManager : MonoBehaviour
 
     #region Methods
 
-    private void Start()
+    void Update()
     {
-        OnPause.AddListener(PauseUnpauseGame);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!onMenu)
+            {
+                PauseUnpauseGame();
+            }
+            else if (InputManager.instance.changingAnyKey)
+            {
+                InputManager.instance.CancelChangeKey();
+            }
+            else
+            {
+                ReturnToPreviousMenu();
+            }
+        }
+    }
+
+    public void ReturnToPreviousMenu()
+    {
+        if (previousMenus.Count == 0)
+        {
+            return;
+        }
+        else
+        {
+            previousMenus.Last().SetActive(false);
+            previousMenus.RemoveAt(previousMenus.Count - 1);
+            if (previousMenus.Count != 0)
+                LoadMenu(previousMenus.Last());
+        }
     }
 
     public void PauseUnpauseGame()
@@ -42,18 +73,29 @@ public class GameManager : MonoBehaviour
         {
             //Time stop
             Time.timeScale = 0;
-            if (UIScene != null)
-            {
-                SceneManager.LoadSceneAsync(UIScene.buildIndex, LoadSceneMode.Additive);
-            }
+
+            previousMenus.Add(PauseMenu);
+            LoadMenu(PauseMenu);
+
             return;
         }
         //else
         Time.timeScale = 1;
-        if (UIScene != null)
-        {
-            SceneManager.UnloadSceneAsync(UIScene.buildIndex);
-        }
+        PauseMenu.SetActive(false);
+        previousMenus.Clear();
     }
+
+    private void LoadMenu(GameObject menu)
+    {
+        previousMenus.Add(menu);
+        menu.SetActive(true);
+    }
+
+    public void OnSettingsButton()
+    {
+        LoadMenu(SettingsMenu);
+    }
+
+
     #endregion
 }

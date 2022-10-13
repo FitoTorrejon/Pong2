@@ -4,15 +4,23 @@ using TMPro;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
+
     public Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>();
 
     public TMP_Text leftUpKey, leftDownKey, rightUpKey, rightDownKey;
 
     private bool changingLeftUp, changingLeftDown, changingRightUp, changingRightDown;
 
+    public bool changingAnyKey => (changingLeftUp || changingLeftDown || changingRightUp || changingRightDown);
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
         keys.Add("LeftUp", (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("LeftUp", "W")));
         keys.Add("LeftDown", (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("LeftDown", "S")));
         keys.Add("RightUp", (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("RightUp", "UpArrow")));
@@ -28,7 +36,7 @@ public class InputManager : MonoBehaviour
     private void OnGUI()
     {
         Event e = Event.current;
-        if (e.isKey)
+        if (e.isKey && (e.keyCode != KeyCode.Escape))
         {
             if (changingLeftUp)
             {
@@ -54,6 +62,10 @@ public class InputManager : MonoBehaviour
                 rightDownKey.text = e.keyCode.ToString();
                 changingRightDown = false;
             }
+        }
+        if (e.keyCode == KeyCode.Escape)
+        {
+            CancelChangeKey();
         }
     }
 
