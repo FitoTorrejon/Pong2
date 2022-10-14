@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     List<GameObject> previousMenus;
 
     private bool gamePaused;
-    private bool onMenu;
+    public bool onMenu = true;
 
     #endregion
 
@@ -20,9 +20,12 @@ public class GameManager : MonoBehaviour
 
     #region Accesses
 
+    public static GameManager instance;
+
     [SerializeField] Scene LoadingScreen;
     [SerializeField] GameObject SettingsMenu;
     [SerializeField] GameObject PauseMenu;
+    [SerializeField] GameObject MainMenu;
 
     public bool GamePaused {
         get => gamePaused;
@@ -31,6 +34,14 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Methods
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
 
     void Update()
     {
@@ -94,6 +105,12 @@ public class GameManager : MonoBehaviour
     public void OnSettingsButton()
     {
         LoadMenu(SettingsMenu);
+    }
+
+    public void OnBackToMenu()
+    {
+        onMenu = true;
+        LoadMenu(MainMenu);
     }
 
 

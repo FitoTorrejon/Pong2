@@ -1,18 +1,29 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using TMPro;
+//using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    List<GameObject> previousMenus;
+    float timer = 3;
+
+    List<GameObject> previousMenus = new List<GameObject>();
 
     [SerializeField] GameObject MainMenu;
     [SerializeField] GameObject InstructionsMenu;
-    [SerializeField] GameObject AchievementsMenu;
     [SerializeField] GameObject SettingsMenu;
 
-    [SerializeField] Scene LoadingScreen;
+    [SerializeField] GameObject FirstLevel;
+
+    [SerializeField] TMP_Text timerText;
+
+    private void Awake()
+    {
+        Time.timeScale = 0;
+    }
+
 
     void Update()
     {
@@ -51,9 +62,23 @@ public class MenuManager : MonoBehaviour
 
     public void OnNewGameButton()
     {
-        SceneManager.LoadSceneAsync(LoadingScreen.buildIndex, LoadSceneMode.Additive);
-        //mirar com fer servir el await per carregar la escena de la partida
-        //SceneManager.UnloadSceneAsync(LoadingScreen.buildIndex);
+        GameManager.instance.onMenu = false;
+        MainMenu.SetActive(false);
+        FirstLevel.SetActive(true);
+        timerText.gameObject.SetActive(true);
+        StartCoroutine(StartCountdown());
+    }
+
+    IEnumerator StartCountdown()
+    {
+        while(timer > 0)
+        {
+            timerText.text = timer.ToString();
+            timer--;
+            yield return new WaitForSeconds(1);
+        }
+        timerText.gameObject.SetActive(false);
+        Time.timeScale = 1;
     }
 
     public void OnInstructionsButton()
@@ -64,11 +89,6 @@ public class MenuManager : MonoBehaviour
     public void OnSettingsButton()
     {
         LoadMenu(SettingsMenu);
-    }
-
-    public void OnAchievementsButton()
-    {
-        LoadMenu(AchievementsMenu);
     }
 
     public void OnQuitButton()
