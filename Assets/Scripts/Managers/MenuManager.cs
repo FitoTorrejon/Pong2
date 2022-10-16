@@ -15,6 +15,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject InstructionsMenu;
     [SerializeField] GameObject SettingsMenu;
 
+    [SerializeField] GameObject ball;
+
     [SerializeField] GameObject FirstLevel;
 
     [SerializeField] TMP_Text timerText;
@@ -71,6 +73,7 @@ public class MenuManager : MonoBehaviour
 
     IEnumerator StartCountdown()
     {
+        Time.timeScale = 1;
         while(timer > 0)
         {
             timerText.text = timer.ToString();
@@ -78,7 +81,21 @@ public class MenuManager : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
         timerText.gameObject.SetActive(false);
-        Time.timeScale = 1;
+        ThrowBall();
+    }
+
+    void ThrowBall()
+    {
+        int i = Random.Range(0, 2);
+
+        Rigidbody ballRb = ball.GetComponent<Rigidbody>();
+
+        if (i == 0)
+        {
+            ballRb.AddForce(transform.right * 10, ForceMode.Impulse);
+            return;
+        }
+        ball.GetComponent<Rigidbody>().AddForce(-transform.right * 5, ForceMode.Impulse);
     }
 
     public void OnInstructionsButton()
