@@ -7,23 +7,30 @@ using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
-    float timer = 3;
+    public static MenuManager instance;
+
+    int timer = 3;
 
     List<GameObject> previousMenus = new List<GameObject>();
 
     [SerializeField] GameObject MainMenu;
     [SerializeField] GameObject InstructionsMenu;
     [SerializeField] GameObject SettingsMenu;
-
-    [SerializeField] GameObject ball;
+    [SerializeField] GameObject LevelsMenu;
 
     [SerializeField] GameObject FirstLevel;
+    [SerializeField] GameObject SecondLevel;
 
     [SerializeField] TMP_Text timerText;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
         Time.timeScale = 0;
+        LoadMenu(MainMenu);
     }
 
 
@@ -31,6 +38,10 @@ public class MenuManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (!GameManager.instance.onMenu)
+            {
+                return;
+            }
             if (InputManager.instance.changingAnyKey)
             {
                 InputManager.instance.CancelChangeKey();
@@ -44,11 +55,11 @@ public class MenuManager : MonoBehaviour
 
     public void ReturnToPreviousMenu()
     {
-        if (previousMenus.Count == 0)
+        if (previousMenus.Count == 1)
         {
-            LoadMenu(MainMenu);
+            return;
         }
-        else
+        if (previousMenus.Count > 1)
         {
             previousMenus.Last().SetActive(false);
             previousMenus.RemoveAt(previousMenus.Count - 1);
@@ -62,11 +73,34 @@ public class MenuManager : MonoBehaviour
         menu.SetActive(true);
     }
 
+    public void ReturnToMainMenu()
+    {
+        previousMenus.Add(MainMenu);
+        MainMenu.SetActive(true);
+    }
+
     public void OnNewGameButton()
+    {
+        LoadMenu(LevelsMenu);
+        MainMenu.SetActive(false);
+    }
+
+    public void OnLevel1Button()
     {
         GameManager.instance.onMenu = false;
         MainMenu.SetActive(false);
+        LevelsMenu.SetActive(false);
         FirstLevel.SetActive(true);
+        timerText.gameObject.SetActive(true);
+        StartCoroutine(StartCountdown());
+    }
+
+    public void OnLevel2Button()
+    {
+        GameManager.instance.onMenu = false;
+        MainMenu.SetActive(false);
+        LevelsMenu.SetActive(false);
+        SecondLevel.SetActive(true);
         timerText.gameObject.SetActive(true);
         StartCoroutine(StartCountdown());
     }
@@ -74,38 +108,26 @@ public class MenuManager : MonoBehaviour
     IEnumerator StartCountdown()
     {
         Time.timeScale = 1;
-        while(timer > 0)
+        while (timer > 0)
         {
             timerText.text = timer.ToString();
             timer--;
             yield return new WaitForSeconds(1);
         }
         timerText.gameObject.SetActive(false);
-        ThrowBall();
-    }
-
-    void ThrowBall()
-    {
-        int i = Random.Range(0, 2);
-
-        Rigidbody ballRb = ball.GetComponent<Rigidbody>();
-
-        if (i == 0)
-        {
-            ballRb.AddForce(transform.right * 10, ForceMode.Impulse);
-            return;
-        }
-        ball.GetComponent<Rigidbody>().AddForce(-transform.right * 5, ForceMode.Impulse);
+        timer = 3;
     }
 
     public void OnInstructionsButton()
     {
         LoadMenu(InstructionsMenu);
+        MainMenu.SetActive(false);
     }
 
     public void OnSettingsButton()
     {
         LoadMenu(SettingsMenu);
+        MainMenu.SetActive(false);
     }
 
     public void OnQuitButton()

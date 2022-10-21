@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
 
-    List<GameObject> previousMenus;
+    [SerializeField] GameObject firstLevel;
+    [SerializeField] GameObject secondLevel;
 
     private bool gamePaused;
     public bool onMenu = true;
@@ -25,7 +26,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] Scene LoadingScreen;
     [SerializeField] GameObject SettingsMenu;
     [SerializeField] GameObject PauseMenu;
-    [SerializeField] GameObject MainMenu;
 
     public bool GamePaused {
         get => gamePaused;
@@ -47,33 +47,16 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!onMenu)
+            if (onMenu)
             {
-                PauseUnpauseGame();
+                return;
             }
-            else if (InputManager.instance.changingAnyKey)
+            if (InputManager.instance.changingAnyKey)
             {
                 InputManager.instance.CancelChangeKey();
+                return;
             }
-            else
-            {
-                ReturnToPreviousMenu();
-            }
-        }
-    }
-
-    public void ReturnToPreviousMenu()
-    {
-        if (previousMenus.Count == 0)
-        {
-            return;
-        }
-        else
-        {
-            previousMenus.Last().SetActive(false);
-            previousMenus.RemoveAt(previousMenus.Count - 1);
-            if (previousMenus.Count != 0)
-                LoadMenu(previousMenus.Last());
+            PauseUnpauseGame();
         }
     }
 
@@ -85,7 +68,6 @@ public class GameManager : MonoBehaviour
             //Time stop
             Time.timeScale = 0;
 
-            previousMenus.Add(PauseMenu);
             LoadMenu(PauseMenu);
 
             return;
@@ -93,24 +75,26 @@ public class GameManager : MonoBehaviour
         //else
         Time.timeScale = 1;
         PauseMenu.SetActive(false);
-        previousMenus.Clear();
     }
 
     private void LoadMenu(GameObject menu)
     {
-        previousMenus.Add(menu);
         menu.SetActive(true);
     }
 
     public void OnSettingsButton()
     {
+        PauseMenu.SetActive(false);
         LoadMenu(SettingsMenu);
     }
 
     public void OnBackToMenu()
     {
         onMenu = true;
-        LoadMenu(MainMenu);
+        PauseMenu.SetActive(false);
+        firstLevel.SetActive(false);
+        secondLevel.SetActive(false);
+        MenuManager.instance.ReturnToMainMenu();
     }
 
 
