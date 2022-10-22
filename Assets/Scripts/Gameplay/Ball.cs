@@ -31,6 +31,15 @@ public class Ball : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        gameObject.SetActive(false);
+        rb.velocity = Vector3.zero;
+        desiredVelocity = Vector3.zero;
+        transform.position = new Vector3(0, 0.5f, 0);
+        gameObject.SetActive(true);
+    }
+
     private void FixedUpdate()
     {
         if (rb.velocity != Vector3.zero)

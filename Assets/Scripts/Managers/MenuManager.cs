@@ -17,11 +17,17 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject InstructionsMenu;
     [SerializeField] GameObject SettingsMenu;
     [SerializeField] GameObject LevelsMenu;
+    [SerializeField] GameObject candyBackground;
+    [SerializeField] GameObject spaceBackground;
 
     [SerializeField] GameObject FirstLevel;
     [SerializeField] GameObject SecondLevel;
 
     [SerializeField] TMP_Text timerText;
+    [SerializeField] GameObject pointCounter1;
+    [SerializeField] GameObject pointCounter2;
+
+    [SerializeField] GameObject randomBall;
 
     private void Awake()
     {
@@ -30,6 +36,7 @@ public class MenuManager : MonoBehaviour
             instance = this;
         }
         Time.timeScale = 0;
+        randomBall.SetActive(true);
         LoadMenu(MainMenu);
     }
 
@@ -75,8 +82,13 @@ public class MenuManager : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
+        candyBackground.SetActive(false);
+        spaceBackground.SetActive(false);
         previousMenus.Add(MainMenu);
         MainMenu.SetActive(true);
+        pointCounter1.SetActive(false);
+        pointCounter2.SetActive(false);
+        randomBall.SetActive(true);
     }
 
     public void OnNewGameButton()
@@ -92,6 +104,10 @@ public class MenuManager : MonoBehaviour
         LevelsMenu.SetActive(false);
         FirstLevel.SetActive(true);
         timerText.gameObject.SetActive(true);
+        candyBackground.SetActive(true);
+        pointCounter1.SetActive(true);
+        pointCounter2.SetActive(true);
+        randomBall.SetActive(false);
         StartCoroutine(StartCountdown());
     }
 
@@ -102,6 +118,10 @@ public class MenuManager : MonoBehaviour
         LevelsMenu.SetActive(false);
         SecondLevel.SetActive(true);
         timerText.gameObject.SetActive(true);
+        spaceBackground.SetActive(true);
+        pointCounter1.SetActive(true);
+        pointCounter2.SetActive(true);
+        randomBall.SetActive(false);
         StartCoroutine(StartCountdown());
     }
 

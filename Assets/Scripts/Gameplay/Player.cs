@@ -6,8 +6,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] bool playerLeft;
     [SerializeField] float moveSpeed = 10f;
-    bool canMoveUp = true;
-    bool canMoveDown = true;
+
+    [SerializeField] float maxHeight = 3.5f;
 
     private void Update()
     {
@@ -18,13 +18,13 @@ public class Player : MonoBehaviour
     {
         if (playerLeft)
         {
-            if (Input.GetKey(InputManager.instance.keys["LeftUp"]) && canMoveUp)
+            if (Input.GetKey(InputManager.instance.keys["LeftUp"]) && (transform.position.z < maxHeight))
             {
                 Vector3 dir = new Vector3(0, 0, 1);
                 transform.Translate(dir * moveSpeed * Time.deltaTime);
             }
 
-            if (Input.GetKey(InputManager.instance.keys["LeftDown"]) && canMoveDown)
+            if (Input.GetKey(InputManager.instance.keys["LeftDown"]) && (transform.position.z > -maxHeight))
             {
                 Vector3 dir = new Vector3(0, 0, -1);
                 transform.Translate(dir * moveSpeed * Time.deltaTime);
@@ -32,35 +32,17 @@ public class Player : MonoBehaviour
         }
         else //player right
         {
-            if (Input.GetKey(InputManager.instance.keys["RightUp"]) && canMoveUp)
+            if (Input.GetKey(InputManager.instance.keys["RightUp"]) && (transform.position.z < maxHeight))
             {
                 Vector3 dir = new Vector3(0, 0, 1);
                 transform.Translate(dir * moveSpeed * Time.deltaTime);
             }
 
-            if (Input.GetKey(InputManager.instance.keys["RightDown"]) && canMoveDown)
+            if (Input.GetKey(InputManager.instance.keys["RightDown"]) && (transform.position.z > -maxHeight))
             {
                 Vector3 dir = new Vector3(0, 0, -1);
                 transform.Translate(dir * moveSpeed * Time.deltaTime);
             }
         }
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.transform.CompareTag("LimitTopWall"))
-        {
-            canMoveUp = false;
-        }
-        if (other.transform.CompareTag("LimitBottomWall"))
-        {
-            canMoveDown = false;
-        }
-    }
-
-    private void OnCollisionExit(Collision other)
-    {
-        canMoveDown = true;
-        canMoveUp = true;
     }
 }
