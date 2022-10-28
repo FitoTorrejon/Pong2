@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool playerLeft;
     [SerializeField] float moveSpeed = 10f;
 
-    [SerializeField] float maxHeight = 3.5f;
+    [SerializeField] float maxHeight = 3.7f;
 
     private void Update()
     {

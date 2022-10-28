@@ -1,7 +1,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,8 +10,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject firstLevel;
     [SerializeField] GameObject secondLevel;
 
-    private bool gamePaused;
+    [SerializeField] GameObject victoryPanel;
+
+    private bool GamePaused = false;
     public bool onMenu = true;
+
+    public int pointsToWin = 10;
 
     #endregion
 
@@ -27,10 +31,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject SettingsMenu;
     [SerializeField] GameObject PauseMenu;
 
-    public bool GamePaused {
-        get => gamePaused;
-        set => gamePaused = value;
-    }
     #endregion
 
     #region Methods
@@ -58,6 +58,22 @@ public class GameManager : MonoBehaviour
             }
             PauseUnpauseGame();
         }
+    }
+
+    public void GameOver(string winner)
+    {
+        GamePaused = true;
+        Time.timeScale = 0;
+        victoryPanel.SetActive(true);
+        victoryPanel.GetComponentInChildren<TMP_Text>().text = winner + " WINS!!";
+        StartCoroutine(OnGameOver(winner));
+    }
+
+    IEnumerator OnGameOver(string winner)
+    {
+        yield return new WaitForSeconds(3);
+        victoryPanel.SetActive(false);
+        OnBackToMenu();
     }
 
     public void PauseUnpauseGame()
@@ -90,6 +106,7 @@ public class GameManager : MonoBehaviour
 
     public void OnBackToMenu()
     {
+        GamePaused = false;
         onMenu = true;
         PauseMenu.SetActive(false);
         firstLevel.SetActive(false);

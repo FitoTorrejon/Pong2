@@ -88,7 +88,9 @@ public class MenuManager : MonoBehaviour
         MainMenu.SetActive(true);
         pointCounter1.SetActive(false);
         pointCounter2.SetActive(false);
-        randomBall.SetActive(true);
+        timerText.gameObject.SetActive(false);
+        StopCoroutine(StartCountdown());
+        timer = 3;
     }
 
     public void OnNewGameButton()
@@ -107,7 +109,6 @@ public class MenuManager : MonoBehaviour
         candyBackground.SetActive(true);
         pointCounter1.SetActive(true);
         pointCounter2.SetActive(true);
-        randomBall.SetActive(false);
         StartCoroutine(StartCountdown());
     }
 
@@ -121,7 +122,6 @@ public class MenuManager : MonoBehaviour
         spaceBackground.SetActive(true);
         pointCounter1.SetActive(true);
         pointCounter2.SetActive(true);
-        randomBall.SetActive(false);
         StartCoroutine(StartCountdown());
     }
 
