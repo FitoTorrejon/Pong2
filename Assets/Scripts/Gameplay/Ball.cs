@@ -7,52 +7,28 @@ public class Ball : MonoBehaviour
     float timer = 3;
 
     Rigidbody rb;
-    //public Vector3 desiredVelocity;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
-/*
-    private void OnCollisionEnter(Collision other)
-    {
-        
-        if (other.transform.CompareTag("PlayerLeft") || other.transform.CompareTag("PlayerRight"))
-        {
-            rb.velocity = new Vector3(-desiredVelocity.x, 0, desiredVelocity.z);
-            rb.velocity *= 1.02f;
-            desiredVelocity = rb.velocity;
 
-        }
-
-        if (other.transform.CompareTag("LimitTopWall") || other.transform.CompareTag("LimitBottomWall"))
-        {
-            rb.velocity = new Vector3(desiredVelocity.x, 0, -desiredVelocity.z);
-        }
-    }
-*/
     private void OnTriggerEnter(Collider other)
     {
         gameObject.SetActive(false);
         rb.velocity = Vector3.zero;
-       // desiredVelocity = Vector3.zero;
         transform.position = new Vector3(0, 0.5f, 0);
         gameObject.SetActive(true);
     }
-/*
-    private void FixedUpdate()
+
+    private void OnCollisionEnter(Collision collision)
     {
-        
-        if (rb.velocity != Vector3.zero)
+        if (collision.collider.CompareTag("Player"))
         {
-            desiredVelocity = rb.velocity;
-        }
-        else
-        {
-            rb.velocity = desiredVelocity;
+            MusicManager.instance.source.PlayOneShot(MusicManager.instance.HitSound());
         }
     }
-*/
+
     private void OnEnable()
     {
         timer = 3;

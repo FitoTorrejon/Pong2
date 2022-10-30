@@ -24,7 +24,7 @@ public class LeftCounter : MonoBehaviour
         if (currentPoints >= GameManager.instance.pointsToWin)
         {
             ball.SetActive(false);
-            GameManager.instance.GameOver("RIGHT PLAYER");
+            GameManager.instance.GameOver("PLAYER 2");
             
         }
     }

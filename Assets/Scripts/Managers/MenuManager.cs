@@ -89,6 +89,8 @@ public class MenuManager : MonoBehaviour
         pointCounter1.SetActive(false);
         pointCounter2.SetActive(false);
         timerText.gameObject.SetActive(false);
+        MusicManager.instance.source.clip = MusicManager.instance.clips[0];
+        MusicManager.instance.source.Play();
         StopCoroutine(StartCountdown());
         timer = 3;
     }
@@ -109,6 +111,8 @@ public class MenuManager : MonoBehaviour
         candyBackground.SetActive(true);
         pointCounter1.SetActive(true);
         pointCounter2.SetActive(true);
+        MusicManager.instance.source.clip = MusicManager.instance.clips[1];
+        MusicManager.instance.source.Play();
         StartCoroutine(StartCountdown());
     }
 
@@ -122,6 +126,8 @@ public class MenuManager : MonoBehaviour
         spaceBackground.SetActive(true);
         pointCounter1.SetActive(true);
         pointCounter2.SetActive(true);
+        MusicManager.instance.source.clip = MusicManager.instance.clips[2];
+        MusicManager.instance.source.Play();
         StartCoroutine(StartCountdown());
     }
 
